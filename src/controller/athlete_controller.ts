@@ -51,7 +51,7 @@ export const getAthleteById = async (
 }
 
 export const updateAthlete = async (
-  req: Request<{ id: string, body: AthleteBody }>,
+  req: Request<{ id: string }, {}, AthleteBody>,
   res: Response
 ): Promise<any> => {
   const { id } = req.params;
