@@ -1,6 +1,12 @@
 export type AthleteType = 'adult' | 'kids'
-export type KidsBelts = 'white' | 'greywhite' | 'grey' | 'greyblack' | 'yellowwhite' | 'yellow' | 'yellowblack' | 'orangewhite' | 'orange' | 'orangeblack' | 'greenwhite' | 'green' | 'greenblack'
-export type AdultsBelts = 'white' | 'blue' | 'purple' | 'brown' | 'black'
+
+
+export const KidsBelts = ['white' , 'greywhite' , 'grey' , 'greyblack' , 'yellowwhite' , 'yellow' , 'yellowblack' , 'orangewhite' , 'orange' , 'orangeblack' , 'greenwhite' , 'green' , 'greenblack'] as const
+export type KidsBelts = typeof KidsBelts[number]
+
+export const AdultsBelts = ['white' , 'blue' , 'purple' , 'brown' , 'black'] as const
+export type AdultsBelts = typeof AdultsBelts[number]
+
 export type Belt = KidsBelts | AdultsBelts;
 
 export interface AthleteBody {
