@@ -49,4 +49,4 @@ const AthleteSchema = new Schema<AthleteDocument>({
     }
 }, { timestamps: true })
 
-export const Athlete = model<AthleteBody>('Athlete', AthleteSchema)
+export const Athlete = model<AthleteDocument>('Athlete', AthleteSchema)
