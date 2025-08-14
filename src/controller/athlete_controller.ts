@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { Athlete } from '../models/athlete_model';
+import { Athlete } from '../models/athlete.model';
 import { AthleteBody } from '../types/types';
 
 export const createAthlete = async (
