@@ -1,12 +1,15 @@
 import { Schema, model, Document, Types } from 'mongoose';
-import { AthleteBody, AthleteType, KidsBelts, AdultsBelts, Belt } from '../types/types';
+import { AthleteBody, AthleteType, KidsBelts, AdultsBelts, Belt, GenderType, EnsuranceType } from '../types/types';
 
 export interface AthleteDocument extends Document, AthleteBody {
-    medicalCertificateId?: Types.ObjectId;
     subscriptionId?: Types.ObjectId;
 }
 
 const athleteTypes: AthleteType[] = ['adult', 'kids'];
+
+const genderTypes: GenderType[] = ['M', 'F'];
+
+const ensuranceTypes: EnsuranceType[] = ['A', 'B']
 
 const kidsBelt: KidsBelts[] = [
     'white', 'greywhite', 'grey', 'greyblack',
@@ -32,6 +35,15 @@ const AthleteSchema = new Schema<AthleteDocument>({
         type: Date, 
         required: true 
     },
+    fiscalCode: {
+        type: String,
+        required: true,
+        length: 16
+    },
+    gender: {
+        type: String,
+        enum: genderTypes
+    },
     email: { 
         type: String, 
         required: true 
@@ -50,16 +62,31 @@ const AthleteSchema = new Schema<AthleteDocument>({
         enum: allBelts, 
         required: true 
     },
-  
-    medicalCertificateId: { 
-        type: Schema.Types.ObjectId, 
-        ref: 'MedicalCertificate', 
-        default: null 
-    },
     subscriptionId: { 
         type: Schema.Types.ObjectId, 
         ref: 'Subscription', 
         default: null 
+    },
+    medicalCertificate: {
+        type: Boolean,
+        required: false
+    },
+    medicalCertificateExp: {
+        type: Date,
+        required: false
+    },
+    ensurance: {
+        type: Boolean,
+        required: true
+    },
+    ensuranceType: {
+        type: String,
+        required: true,
+        enum: ensuranceTypes
+    },
+    ensuranceExp: {
+        type: Date,
+        required: true
     }
   }, {timestamps: true});
   

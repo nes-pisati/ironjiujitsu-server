@@ -21,19 +21,28 @@ export type Belt = Exclude<KidsBelts, 'white'> | AdultsBelts;
 
 export type SubscriptionTypes = 'single' | 'month' | 'quarterly'
 
+export type GenderType = 'M' | 'F'
+
+export type EnsuranceType = 'A' | 'B'
+
 export interface AthleteBody {
     name: string;
     surname: string;
     birthDate: Date;
+    fiscalCode: String;
+    gender: GenderType;
     email: string;
     phoneNumber: string;
     type: AthleteType;
-    belt: Belt
+    belt: Belt,
+    medicalCertificate: boolean;
+    medicalCertificateExp: Date;
+    ensurance: boolean;
+    ensuranceType: EnsuranceType;
+    ensuranceExp: Date;
 }
 
 export interface AthleteState extends AthleteBody {
-    medicalCertificateId: string;
-    medicalCertificateExp: string;
     subscriptionId: string;
     subscriptionExp: string;
 }
@@ -47,8 +56,6 @@ export interface SubscriptionBody {
     athleteId?: string;
     notes?: string;
 }
-
-//Medical Certificate
 
 //User
 

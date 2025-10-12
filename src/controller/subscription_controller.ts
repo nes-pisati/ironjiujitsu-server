@@ -8,7 +8,7 @@ import { Athlete } from './../models/athlete.model';
 
 //POST
 export const createSubscription = async (
-    req: Request<{ athleteId?: string }, {}, SubscriptionBody>,
+    req: Request<{ athleteId: string }, {}, SubscriptionBody>,
     res: Response
 ): Promise<any> => {
     const { athleteId } = req.params;
@@ -78,42 +78,42 @@ export const getAllSubscriptions = async (
 }
 
 //GET MENSILI E TRIMESTRALI
-export const getAllActiveSubscriptions = async (
-    req: Request,
-    res: Response
-): Promise<any> => {
-    try {
-        const subscriptions = await Subscription.find({
-            type: { $in: ['month', 'quarterly'] }
-        }).populate({
-            path: 'athleteId',
-            select: 'name surname'
-        }).sort({ date: -1 });
+// export const getAllActiveSubscriptions = async (
+//     req: Request,
+//     res: Response
+// ): Promise<any> => {
+//     try {
+//         const subscriptions = await Subscription.find({
+//             type: { $in: ['month', 'quarterly'] }
+//         }).populate({
+//             path: 'athleteId',
+//             select: 'name surname'
+//         }).sort({ date: -1 });
 
-        res.status(200).json(subscriptions);
-    } catch (error) {
-        res.status(400).json({
-            error: 'Errore nel recupero degli abbonamenti mensili/trimestrali',
-            details: error,
-        });
-    }
-};
+//         res.status(200).json(subscriptions);
+//     } catch (error) {
+//         res.status(400).json({
+//             error: 'Errore nel recupero degli abbonamenti mensili/trimestrali',
+//             details: error,
+//         });
+//     }
+// };
 
 //GET ALL INGRESSI SINGOLI
-export const getAllSingleEntries = async (
-    req: Request,
-    res: Response
-  ): Promise<any> => {
-    try {
-      const entries = await Subscription.find({
-        type: 'single'
-      }).sort({ date: -1 });
+// export const getAllSingleEntries = async (
+//     req: Request,
+//     res: Response
+//   ): Promise<any> => {
+//     try {
+//       const entries = await Subscription.find({
+//         type: 'single'
+//       }).sort({ date: -1 });
   
-      res.status(200).json(entries);
-    } catch (error) {
-      res.status(400).json({
-        error: 'Errore nel recupero degli ingressi singoli',
-        details: error,
-      });
-    }
-  };
+//       res.status(200).json(entries);
+//     } catch (error) {
+//       res.status(400).json({
+//         error: 'Errore nel recupero degli ingressi singoli',
+//         details: error,
+//       });
+//     }
+//   };

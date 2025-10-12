@@ -8,7 +8,7 @@ const SubscriptionSchema = new Schema({
     },
     type: { 
         type: String, 
-        enum: ['single', 'month', 'quarterly'], 
+        enum: ['month', 'quarterly'], 
         required: true 
     },
     amount: { 
@@ -17,6 +17,11 @@ const SubscriptionSchema = new Schema({
     },
     subscriptionExp: { 
         type: Date, 
+        required: true 
+    },
+    paymentType: { 
+        type: String,
+        enum: ['banktransfer', 'cash', 'paypal'], 
         required: true 
     },
     athleteId: { 
