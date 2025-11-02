@@ -1,12 +1,32 @@
 import { Request, Response } from 'express';
 import { Athlete } from '../models/athlete.model';
 import { AthleteBody } from '../types/types';
+import { getExpirationDate } from '../utils/athleteUtils';
 
 export const createAthlete = async (
   req: Request<{}, {}, AthleteBody>,
   res: Response): Promise<any> => {
+
+  const data = req.body;
+
   try {
-    const newAthlete = await Athlete.create(req.body);
+
+    let medicalCertificateExpiration: Date | null = null;
+    let ensuranceExpiration: Date | null = null;
+
+    if(data.medicalCertificateExp != null) {
+      medicalCertificateExpiration = getExpirationDate(data.medicalCertificateExp)
+    }
+
+    if(data.ensuranceExp != null) {
+      ensuranceExpiration = getExpirationDate(data.ensuranceExp)
+    }
+
+    const newAthlete = await Athlete.create({
+      ...data,
+      medicalCertificateExp: medicalCertificateExpiration,
+      ensuranceExp: ensuranceExpiration 
+    });
     res.status(201).json(newAthlete);
   } catch (error) {
     res.status(400).json({
@@ -35,12 +55,12 @@ export const getAthleteById = async (
   req: Request<{ id: string }>,
   res: Response
 ): Promise<any> => {
-  const { id }  = req.params;
+  const { id } = req.params;
 
   try {
     const athlete = await Athlete.findById(id)
 
-    if (!athlete) {return res.status(404).json({ error: 'Atleta non trovato' })}
+    if (!athlete) { return res.status(404).json({ error: 'Atleta non trovato' }) }
     return res.status(200).json(athlete)
   } catch (error) {
     res.status(400).json({
@@ -69,14 +89,14 @@ export const updateAthlete = async (
 }
 
 export const deleteAthlete = async (
-  req: Request<{ id: string}>,
+  req: Request<{ id: string }>,
   res: Response
 ): Promise<any> => {
   const { id } = req.params;
 
   try {
     const athleteToDelete = await Athlete.findByIdAndDelete(id)
-    return res.status(200).json({message: 'Atleta rimosso correttamente'})
+    return res.status(200).json({ message: 'Atleta rimosso correttamente' })
   } catch (error) {
     res.status(400).json({
       error: 'Errore nell\'eliminazione dell\'atleta',

@@ -46,7 +46,6 @@ const AthleteSchema = new Schema<AthleteDocument>({
     },
     email: { 
         type: String, 
-        required: true 
     },
     phoneNumber: { 
         type: String, 
@@ -73,7 +72,7 @@ const AthleteSchema = new Schema<AthleteDocument>({
     },
     medicalCertificateExp: {
         type: Date,
-        required: false
+        required: false,
     },
     ensurance: {
         type: Boolean,
