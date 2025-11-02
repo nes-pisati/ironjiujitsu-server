@@ -21,12 +21,16 @@ const SubscriptionSchema = new Schema({
     },
     paymentType: { 
         type: String,
-        enum: ['banktransfer', 'cash', 'paypal'], 
+        enum: ['banktransfer', 'cash', 'paypal', 'other'], 
         required: true 
     },
     athleteId: { 
         type: Schema.Types.ObjectId, 
         ref: 'Athlete' 
+    },
+    hasAlreadyPaid: {
+        type: Boolean,
+        required: true
     },
     notes: String
   }, { timestamps: true });

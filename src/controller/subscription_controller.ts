@@ -20,6 +20,7 @@ export const createSubscription = async (
         const newSubscription = await Subscription.create({
             ...subscriptionData,
             athleteId: athleteId || subscriptionData.athleteId || undefined,
+            hasAlreadyPaid: true,
             subscriptionExp
         });
 

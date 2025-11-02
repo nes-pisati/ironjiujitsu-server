@@ -29,10 +29,8 @@ export const getSubscriptionExp = (subscription: SubscriptionLike): Date => {
   const start = new Date(subscription.date);
   const end = new Date(start);
 
-  if(start.getDate() > 15) {
-    end.setDate(15);
-  }
-
+  end.setDate(15);
+  
   switch (subscription.type) {
     case 'month':
       end.setMonth(end.getMonth() + 1);
