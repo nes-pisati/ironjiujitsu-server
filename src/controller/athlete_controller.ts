@@ -14,12 +14,12 @@ export const createAthlete = async (
     let medicalCertificateExpiration: Date | null = null;
     let ensuranceExpiration: Date | null = null;
 
-    if(data.medicalCertificateExp != null) {
-      medicalCertificateExpiration = getExpirationDate(data.medicalCertificateExp)
+    if(data.medicalCertificateReleaseDate != null) {
+      medicalCertificateExpiration = getExpirationDate(data.medicalCertificateReleaseDate)
     }
 
-    if(data.ensuranceExp != null) {
-      ensuranceExpiration = getExpirationDate(data.ensuranceExp)
+    if(data.ensuranceStartDate != null) {
+      ensuranceExpiration = getExpirationDate(data.ensuranceStartDate)
     }
 
     const newAthlete = await Athlete.create({
@@ -75,18 +75,42 @@ export const updateAthlete = async (
   res: Response
 ): Promise<any> => {
   const { id } = req.params;
-  const obj = req.body
+  const data = req.body;
 
   try {
-    const editedAthlete = await Athlete.findByIdAndUpdate(id, obj)
-    return res.status(200).json(editedAthlete)
+    let medicalCertificateExpiration: Date | null = null;
+    let ensuranceExpiration: Date | null = null;
+
+    if (data.medicalCertificateReleaseDate != null) {
+      medicalCertificateExpiration = getExpirationDate(data.medicalCertificateReleaseDate);
+    }
+
+    if (data.ensuranceStartDate != null) {
+      ensuranceExpiration = getExpirationDate(data.ensuranceStartDate);
+    }
+
+    const updatedAthlete = await Athlete.findByIdAndUpdate(
+      id,
+      {
+        ...data,
+        medicalCertificateExp: medicalCertificateExpiration,
+        ensuranceExp: ensuranceExpiration,
+      },
+      { new: true } // restituisce il documento aggiornato
+    );
+
+    if (!updatedAthlete) {
+      return res.status(404).json({ error: 'Atleta non trovato' });
+    }
+
+    return res.status(200).json(updatedAthlete);
   } catch (error) {
     res.status(400).json({
-      error: 'Errore nell\'aggiornamento dell\'atleta',
+      error: "Errore nell'aggiornamento dell'atleta",
       details: error,
     });
   }
-}
+};
 
 export const deleteAthlete = async (
   req: Request<{ id: string }>,

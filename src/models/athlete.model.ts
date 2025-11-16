@@ -70,6 +70,10 @@ const AthleteSchema = new Schema<AthleteDocument>({
         type: Boolean,
         required: false
     },
+    medicalCertificateReleaseDate: {
+        type: Date,
+        required: false
+    },
     medicalCertificateExp: {
         type: Date,
         required: false,
@@ -84,6 +88,10 @@ const AthleteSchema = new Schema<AthleteDocument>({
         enum: ensuranceTypes
     },
     ensuranceExp: {
+        type: Date,
+        required: true
+    },
+    ensuranceStartDate: {
         type: Date,
         required: true
     }

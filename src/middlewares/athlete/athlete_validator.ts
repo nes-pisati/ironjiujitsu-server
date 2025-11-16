@@ -2,8 +2,12 @@ import { Request, Response, NextFunction } from 'express'
 import { AthleteBody, AdultsBelts, KidsBelts, AthleteType } from '../../types/types'
 
 function isEmailValid(email: string): boolean {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email)
+    if(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email)
+    }
+    
+    else return true;
 }
 
 function isAdultBelt(belt: string): belt is AdultsBelts {
@@ -32,7 +36,7 @@ export default function validateAthlete(req: Request, res: Response, next: NextF
     const athleteAge = actualYear - athleteBirthYear;
 
     // Controllo presenza dei campi
-    if (!name || !surname || !birthDate || !email || !phoneNumber || !type || !belt) {
+    if (!name || !surname || !birthDate || !phoneNumber || !type || !belt) {
         return res.status(400).json({ error: 'Tutti i campi sono obbligatori' })
     }
 

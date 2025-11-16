@@ -36,9 +36,11 @@ export interface AthleteBody {
     type: AthleteType;
     belt: Belt,
     medicalCertificate: boolean;
+    medicalCertificateReleaseDate: Date;
     medicalCertificateExp: Date;
     ensurance: boolean;
     ensuranceType: EnsuranceType;
+    ensuranceStartDate: Date;
     ensuranceExp: Date;
 }
 
