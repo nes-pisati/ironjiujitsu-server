@@ -2,101 +2,131 @@ import { Request, Response } from 'express';
 import { Athlete } from '../models/athlete.model';
 import { AthleteBody } from '../types/types';
 import { getExpirationDate } from '../utils/athleteUtils';
+import { CreateAthleteBody, UpdateAthleteBody } from '../dto/athlete.dto';
 
 export const createAthlete = async (
-  req: Request<{}, {}, AthleteBody>,
-  res: Response): Promise<any> => {
+  req: Request<{}, {}, CreateAthleteBody>,
+  res: Response
+): Promise<any> => {
 
   const data = req.body;
 
   try {
+    const medicalCertificateExp = data.medicalCertificateReleaseDate
+      ? getExpirationDate(data.medicalCertificateReleaseDate)
+      : undefined;
 
-    let medicalCertificateExpiration: Date | null = null;
-    let ensuranceExpiration: Date | null = null;
-
-    if(data.medicalCertificateReleaseDate != null) {
-      medicalCertificateExpiration = getExpirationDate(data.medicalCertificateReleaseDate)
-    }
-
-    if(data.ensuranceStartDate != null) {
-      ensuranceExpiration = getExpirationDate(data.ensuranceStartDate)
-    }
+    const ensuranceExp = data.ensuranceStartDate
+      ? getExpirationDate(data.ensuranceStartDate)
+      : undefined;
 
     const newAthlete = await Athlete.create({
       ...data,
-      medicalCertificateExp: medicalCertificateExpiration,
-      ensuranceExp: ensuranceExpiration 
+      ...(medicalCertificateExp && { medicalCertificateExp }),
+      ...(ensuranceExp && { ensuranceExp })
     });
+
     res.status(201).json(newAthlete);
   } catch (error) {
     res.status(400).json({
       error: 'Errore nella creazione dell’atleta',
-      details: error,
+      details: error
     });
   }
 };
+
 
 export const getAllAthletes = async (
   req: Request,
   res: Response
 ): Promise<any> => {
   try {
-    const allAthletes = await Athlete.find();
-    res.status(200).json(allAthletes)
+    const athletes = await Athlete.find().populate('subscriptionId');
+    res.status(200).json(athletes);
   } catch (error) {
     res.status(400).json({
-      error: 'Errore nel recupero delle informazioni sugli atleti',
-      details: error,
+      error: 'Errore nel recupero degli atleti',
+      details: error
     });
   }
-}
+};
+
 
 export const getAthleteById = async (
   req: Request<{ id: string }>,
   res: Response
 ): Promise<any> => {
-  const { id } = req.params;
-
   try {
-    const athlete = await Athlete.findById(id)
+    const athlete = await Athlete.findById(req.params.id)
+      .populate('subscriptionId');
 
-    if (!athlete) { return res.status(404).json({ error: 'Atleta non trovato' }) }
-    return res.status(200).json(athlete)
+    if (!athlete) {
+      return res.status(404).json({ error: 'Atleta non trovato' });
+    }
+
+    res.status(200).json(athlete);
   } catch (error) {
     res.status(400).json({
-      error: 'Errore nel recupero delle informazioni sull\'atleta',
-      details: error,
+      error: "Errore nel recupero dell'atleta",
+      details: error
     });
   }
-}
+};
+
+// export const getAthleteByIdWithSubscription = async (
+//   req: Request<{ id: string }>,
+//   res: Response
+// ) => {
+//   const { id } = req.params;
+
+//   try {
+//     // Trova l'atleta e popola subscriptionId
+//     const athlete = await Athlete.findById(id)
+//       .populate('subscriptionId'); // <-- popola tutti i campi dell'abbonamento
+
+//     if (!athlete) {
+//       return res.status(404).json({ error: 'Atleta non trovato' });
+//     }
+
+//     res.status(200).json(athlete);
+//   } catch (error) {
+//     res.status(400).json({
+//       error: "Errore nel recupero dell'atleta",
+//       details: error
+//     });
+//   }
+// };
+
 
 export const updateAthlete = async (
-  req: Request<{ id: string }, {}, AthleteBody>,
+  req: Request<{ id: string }, {}, UpdateAthleteBody>,
   res: Response
 ): Promise<any> => {
   const { id } = req.params;
   const data = req.body;
 
   try {
-    let medicalCertificateExpiration: Date | null = null;
-    let ensuranceExpiration: Date | null = null;
+    const updateData: any = { ...data };
 
-    if (data.medicalCertificateReleaseDate != null) {
-      medicalCertificateExpiration = getExpirationDate(data.medicalCertificateReleaseDate);
+    if (data.medicalCertificateReleaseDate) {
+      updateData.medicalCertificateExp = getExpirationDate(
+        data.medicalCertificateReleaseDate
+      );
     }
 
-    if (data.ensuranceStartDate != null) {
-      ensuranceExpiration = getExpirationDate(data.ensuranceStartDate);
+    if (data.ensuranceStartDate) {
+      updateData.ensuranceExp = getExpirationDate(
+        data.ensuranceStartDate
+      );
     }
+
+    // 🔒 sicurezza: mai aggiornare subscriptionId
+    delete updateData.subscriptionId;
 
     const updatedAthlete = await Athlete.findByIdAndUpdate(
       id,
-      {
-        ...data,
-        medicalCertificateExp: medicalCertificateExpiration,
-        ensuranceExp: ensuranceExpiration,
-      },
-      { new: true } // restituisce il documento aggiornato
+      updateData,
+      { new: true }
     );
 
     if (!updatedAthlete) {
@@ -107,10 +137,13 @@ export const updateAthlete = async (
   } catch (error) {
     res.status(400).json({
       error: "Errore nell'aggiornamento dell'atleta",
-      details: error,
+      details: error
     });
   }
 };
+
+
+import { Subscription } from '../models/subscription.model';
 
 export const deleteAthlete = async (
   req: Request<{ id: string }>,
@@ -119,15 +152,17 @@ export const deleteAthlete = async (
   const { id } = req.params;
 
   try {
-    const athleteToDelete = await Athlete.findByIdAndDelete(id)
-    return res.status(200).json({ message: 'Atleta rimosso correttamente' })
+    await Subscription.findOneAndDelete({ athleteId: id });
+    await Athlete.findByIdAndDelete(id);
+
+    res.status(200).json({ message: 'Atleta rimosso correttamente' });
   } catch (error) {
     res.status(400).json({
-      error: 'Errore nell\'eliminazione dell\'atleta',
-      details: error,
+      error: "Errore nell'eliminazione dell'atleta",
+      details: error
     });
   }
-}
+};
 
 //GET ALL WITH SUBSCRIPTIONS 
 

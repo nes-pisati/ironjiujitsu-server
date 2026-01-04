@@ -1,5 +1,5 @@
 import express, { Router } from 'express';
-import { createSubscription, getAllSubscriptions, getSubscriptionsByAthlete } from '../controller/subscription_controller';
+import { createSubscription, getAllSubscriptions, getSubscriptionByAthlete, getSubscriptionById, updateSubscription } from '../controller/subscription_controller';
 
 const router: Router = express.Router();
 
@@ -7,12 +7,16 @@ const router: Router = express.Router();
 router.post('/post/:athleteId', createSubscription)
 
 //GET BY ATHLETE
-router.get('/getbyathlete/:athleteId', getSubscriptionsByAthlete)
+router.get('/getbyathlete/:athleteId', getSubscriptionByAthlete)
 
 //GET ALL
 router.get('/getall', getAllSubscriptions)
 
-//EDIT
+//UPDATE
+router.put('/edit/:id', updateSubscription)
+
+//GET BY ID
+router.get('/get/:id', getSubscriptionById);
 
 
 //GET ALL MENSILI E TRIMESTRALI
