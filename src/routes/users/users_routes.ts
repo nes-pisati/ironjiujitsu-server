@@ -1,11 +1,14 @@
 import express, { Router } from 'express';
-import { createUser, deleteUser, getAllUsers, getUserById, updateUser } from '../../controller/users_controller';
-//psw encrypt
+import { createUser, deleteUser, getAllUsers, getUserById, updateUser, loginUser } from '../../controller/users_controller';
 
 const router: Router = express.Router();
 
 //POST
-router.post('/post', createUser) //psw encrypt
+//POST
+router.post('/post', createUser)
+
+//LOGIN
+router.post('/login', loginUser)
 
 //GETALL
 router.get('/get', getAllUsers)
@@ -18,3 +21,5 @@ router.put('/edit/:id', updateUser)
 
 //DELETE
 router.delete('/delete/:id', deleteUser)
+
+export default router
