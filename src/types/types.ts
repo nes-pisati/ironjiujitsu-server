@@ -42,6 +42,8 @@ export interface AthleteBody {
     ensuranceType: EnsuranceType;
     ensuranceStartDate: Date;
     ensuranceExp: Date;
+    whatsappConsent: Boolean;
+    whatsappConsentDate: Date;
 }
 
 export interface AthleteState extends AthleteBody {

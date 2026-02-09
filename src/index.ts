@@ -14,7 +14,7 @@ dotenv.config()
 
 app.use(express.json()); //middleware per leggere JSON nel body delle req
 app.use(cors({
-    origin: 'http://localhost:5174',
+    origin: 'http://localhost:5173',
 }));
 app.use('/athlete', athleteRoutes)
 app.use('/subscription', subscriptionRoutes)
