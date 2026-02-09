@@ -1,8 +1,9 @@
 import { Request, Response } from 'express';
 import { Athlete } from '../models/athlete.model';
-import { AthleteBody } from '../types/types';
 import { getExpirationDate } from '../utils/athleteUtils';
 import { CreateAthleteBody, UpdateAthleteBody } from '../dto/athlete.dto';
+import { Subscription } from '../models/subscription.model';
+import { normalizeItalianPhone } from '../utils/phoneNumberUtils';
 
 export const createAthlete = async (
   req: Request<{}, {}, CreateAthleteBody>,
@@ -22,6 +23,7 @@ export const createAthlete = async (
 
     const newAthlete = await Athlete.create({
       ...data,
+      phoneNumber: normalizeItalianPhone(data.phoneNumber), // 👈 QUI
       ...(medicalCertificateExp && { medicalCertificateExp }),
       ...(ensuranceExp && { ensuranceExp })
     });
@@ -108,6 +110,10 @@ export const updateAthlete = async (
   try {
     const updateData: any = { ...data };
 
+    if (data.phoneNumber) {
+      updateData.phoneNumber = normalizeItalianPhone(data.phoneNumber); // 👈 QUI
+    }
+
     if (data.medicalCertificateReleaseDate) {
       updateData.medicalCertificateExp = getExpirationDate(
         data.medicalCertificateReleaseDate
@@ -120,7 +126,6 @@ export const updateAthlete = async (
       );
     }
 
-    // 🔒 sicurezza: mai aggiornare subscriptionId
     delete updateData.subscriptionId;
 
     const updatedAthlete = await Athlete.findByIdAndUpdate(
@@ -141,9 +146,6 @@ export const updateAthlete = async (
     });
   }
 };
-
-
-import { Subscription } from '../models/subscription.model';
 
 export const deleteAthlete = async (
   req: Request<{ id: string }>,
