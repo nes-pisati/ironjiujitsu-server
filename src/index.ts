@@ -15,7 +15,7 @@ const port = process.env.PORT || 3002;
 app.use(express.json());
 
 app.use(cors({
-    origin: 'http://localhost:5173', // poi in prod metti il dominio reale
+    origin: process.env.FRONTEND_URL,
 }));
 
 app.get('/health', (_, res) => {
