@@ -5,7 +5,7 @@ import subscriptionRoutes from './routes/subscription_routes'
 import usersRoutes from './routes/users/users_routes'
 import { connectDB } from './db'
 import dotenv from 'dotenv'
-import './jobs/subscriptionReminder.job';
+import './cron/subscriptionReminder.cron';
 
 dotenv.config();
 
