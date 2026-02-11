@@ -2,41 +2,53 @@ import cron from 'node-cron';
 import { sendWhatsappMessage } from '../services/whatsapp.service';
 import { Subscription } from '../models/subscription.model';
 
-cron.schedule('0 9 * * *', async () => {
+cron.schedule(
+  '0 9 * * *',
+  async () => {
+    console.log(`⏰ Cron eseguito il ${new Date().toISOString()}`);
 
-  const today = new Date();
-  const day = today.getDate();
+    const today = new Date();
+    const day = today.getDate();
 
-  let reminderType: '7_DAYS' | '3_DAYS' | 'EXPIRED' | null = null;
+    let reminderType: '7_DAYS' | '3_DAYS' | 'EXPIRED' | null = null;
 
-  if (day === 8) reminderType = '7_DAYS';
-  if (day === 12) reminderType = '3_DAYS';
-  if (day === 15) reminderType = 'EXPIRED';
+    if (day === 8) reminderType = '7_DAYS';
+    if (day === 12) reminderType = '3_DAYS';
+    if (day === 15) reminderType = 'EXPIRED';
 
-  if (!reminderType) return;
+    if (!reminderType) return;
 
-  const start = new Date(today.getFullYear(), today.getMonth(), 15);
-  const end = new Date(today.getFullYear(), today.getMonth(), 16);
+    const start = new Date(today.getFullYear(), today.getMonth(), 15);
+    const end = new Date(today.getFullYear(), today.getMonth(), 16);
 
-  const subscriptions = await Subscription.find({
-    subscriptionExp: {
-      $gte: start,
-      $lt: end
-    },
-    hasAlreadyPaid: false
-  }).populate('athleteId');
+    const subscriptions = await Subscription.find({
+      subscriptionExp: {
+        $gte: start,
+        $lt: end
+      },
+      hasAlreadyPaid: false
+    }).populate('athleteId');
 
+    for (const sub of subscriptions) {
+      const athlete: any = sub.athleteId;
 
-  for (const sub of subscriptions) {
-    const athlete: any = sub.athleteId;
+      if (!athlete?.whatsappConsent) continue;
+      if (!athlete?.phoneNumber) continue;
 
-    if (!athlete?.whatsappConsent) continue;
-    if (!athlete?.phoneNumber) continue;
+      try {
+        await sendWhatsappMessage({
+          phone: athlete.phoneNumber,
+          name: athlete.name,
+          reminderType
+        });
 
-    await sendWhatsappMessage({
-      phone: athlete.phoneNumber,
-      name: athlete.name,
-      reminderType
-    });
+        console.log(`Inviato a ${athlete.name}`);
+      } catch (err) {
+        console.error(`Errore invio a ${athlete.name}`, err);
+      }
+    }
+  },
+  {
+    timezone: 'Europe/Rome'
   }
-});
+);
