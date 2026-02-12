@@ -2,7 +2,7 @@ import cron from 'node-cron';
 import { sendWhatsappMessage } from '../services/whatsapp.service';
 import { Subscription } from '../models/subscription.model';
 
-cron.schedule('0 9 * * *', async () => {
+cron.schedule('* * * * *', async () => {
 
   console.log('⏰ Cron WhatsApp avviato');
 
