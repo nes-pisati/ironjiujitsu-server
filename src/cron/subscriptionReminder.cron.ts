@@ -15,7 +15,6 @@ cron.schedule('0 9 * * *', async () => {
   const threeDays = new Date(today);
   threeDays.setDate(today.getDate() + 3);
 
-  // 🔎 Prendiamo tutte le subscription che scadono entro 7 giorni
   const subscriptions = await Subscription.find({
     subscriptionExp: { $lte: sevenDays }
   }).populate('athleteId');
@@ -27,6 +26,7 @@ cron.schedule('0 9 * * *', async () => {
     const athlete: any = sub.athleteId;
     if (!athlete?.whatsappConsent) continue;
     if (!athlete?.phoneNumber) continue;
+    if (sub.amount === 0) continue;
 
     const expDate = new Date(sub.subscriptionExp);
     expDate.setHours(0, 0, 0, 0);
