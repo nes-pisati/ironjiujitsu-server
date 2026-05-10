@@ -19,7 +19,7 @@ cron.schedule('0 9 * * *', async () => {
     subscriptionExp: { $lte: sevenDays }
   }).populate('athleteId');
 
-  console.log('Subscriptions trovate:', subscriptions.length);
+  console.log('Subscriptions in scadenza trovate:', subscriptions.length);
 
   for (const sub of subscriptions) {
 
@@ -43,7 +43,7 @@ cron.schedule('0 9 * * *', async () => {
 
     if (!reminderType) continue;
 
-    console.log(`Invio ${reminderType} a ${athlete.name}`);
+    console.log(`Invio ${reminderType} a ${athlete.name} ${athlete.surname}`);
 
     await sendWhatsappMessage({
       phone: athlete.phoneNumber,

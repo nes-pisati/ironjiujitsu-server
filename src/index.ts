@@ -12,11 +12,23 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3002;
 
-app.use(express.json());
+const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    "http://localhost:5173",
+].filter(Boolean) as string[];
 
 app.use(cors({
-    origin: process.env.FRONTEND_URL,
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error(`CORS bloccato per origin: ${origin}`));
+        }
+    },
+    credentials: true,
 }));
+
+app.use(express.json());
 
 app.get('/health', (_, res) => {
     res.status(200).send('OK');
