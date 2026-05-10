@@ -19,7 +19,7 @@ export type AdultsBelts = typeof AdultsBelts[number];
 
 export type Belt = Exclude<KidsBelts, 'white'> | AdultsBelts;
 
-export type SubscriptionTypes = 'single' | 'month' | 'quarterly'
+export type SubscriptionTypes = 'single' | 'month' | 'quarterly' | 'sixmonth' | '10entrance'
 
 export type GenderType = 'M' | 'F'
 

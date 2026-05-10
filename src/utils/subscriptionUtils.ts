@@ -17,8 +17,14 @@ export const isSubscriptionActive = (subscription: SubscriptionLike): boolean =>
     case 'quarterly':
       end.setMonth(end.getMonth() + 3);
       break;
+    case 'sixmonth':
+      end.setMonth(end.getMonth() + 6);
+      break;
+    case '10entrance':
+      end.setFullYear(end.getFullYear() + 1);
+      break;
     case 'single':
-      end.setDate(end.getDate() + 1); 
+      end.setDate(end.getDate() + 1);
       break;
   }
 
@@ -37,6 +43,12 @@ export const getSubscriptionExp = (subscription: SubscriptionLike): Date => {
       break;
     case 'quarterly':
       end.setMonth(end.getMonth() + 3);
+      break;
+    case 'sixmonth':
+      end.setMonth(end.getMonth() + 6);
+      break;
+    case '10entrance':
+      end.setFullYear(end.getFullYear() + 1);
       break;
   }
 

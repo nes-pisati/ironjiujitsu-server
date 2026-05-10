@@ -4,7 +4,9 @@ import { SubscriptionTypes } from '../types/types';
 const subscriptionTypes: SubscriptionTypes[] = [
     'single',
     'month',
-    'quarterly'
+    'quarterly',
+    'sixmonth',
+    '10entrance'
   ];
 
 export interface SubscriptionDocument extends Document {
