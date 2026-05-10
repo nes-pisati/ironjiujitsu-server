@@ -75,13 +75,13 @@ export default function validateAthlete(req: Request, res: Response, next: NextF
         return res.status(400).json({ error: 'Cintura non valida per il tipo kids' })
     }
 
-    // Bambini sotto i 7 anni possono avere solo cinture grigie
-    if (type === 'kids' && athleteAge < 7 && !greyBelts.includes(belt)) {
+    // Bambini sotto i 7 anni possono avere solo cinture bianche o grigie
+    if (type === 'kids' && athleteAge < 7 && belt !== 'white' && !greyBelts.includes(belt)) {
         return res.status(400).json({ error: 'Cintura non valida per questa età' });
     }
 
-    // Bambini sotto i 10 anni possono avere solo cinture grigie o gialle
-    if (type === 'kids' && athleteAge < 10 && !(greyBelts.includes(belt) || yellowBelts.includes(belt))) {
+    // Bambini sotto i 10 anni possono avere solo cinture bianche, grigie o gialle
+    if (type === 'kids' && athleteAge < 10 && belt !== 'white' && !(greyBelts.includes(belt) || yellowBelts.includes(belt))) {
         return res.status(400).json({ error: 'Cintura non valida per questa età' });
     }
 
