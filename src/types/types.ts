@@ -29,7 +29,7 @@ export interface AthleteBody {
     name: string;
     surname: string;
     birthDate: Date;
-    fiscalCode: String;
+    fiscalCode?: string;
     gender: GenderType;
     email: string;
     phoneNumber: string;

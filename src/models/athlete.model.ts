@@ -46,7 +46,6 @@ const AthleteSchema = new Schema<AthleteDocument>(
     },
     fiscalCode: {
       type: String,
-      required: true,
       length: 16
     },
     gender: {
