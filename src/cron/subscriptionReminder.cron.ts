@@ -15,8 +15,11 @@ cron.schedule('0 9 * * *', async () => {
   const threeDays = new Date(today);
   threeDays.setDate(today.getDate() + 3);
 
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+
   const subscriptions = await Subscription.find({
-    subscriptionExp: { $lte: sevenDays }
+    subscriptionExp: { $gte: yesterday, $lte: sevenDays }
   }).populate('athleteId');
 
   console.log('Subscriptions in scadenza trovate:', subscriptions.length);
@@ -37,7 +40,7 @@ cron.schedule('0 9 * * *', async () => {
       reminderType = '7_DAYS';
     } else if (expDate.getTime() === threeDays.getTime()) {
       reminderType = '3_DAYS';
-    } else if (expDate.getTime() < today.getTime()) {
+    } else if (expDate.getTime() === yesterday.getTime()) {
       reminderType = 'EXPIRED';
     }
 
