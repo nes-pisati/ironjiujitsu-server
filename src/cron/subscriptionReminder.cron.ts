@@ -4,6 +4,11 @@ import { Subscription } from '../models/subscription.model';
 
 cron.schedule('0 9 * * *', async () => {
 
+  if (process.env.ENABLE_CRON === 'false') {
+    console.log('Cron WhatsApp disattivato (ENABLE_CRON=false)');
+    return;
+  }
+
   console.log('⏰ Cron WhatsApp avviato');
 
   const today = new Date();
