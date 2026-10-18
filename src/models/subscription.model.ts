@@ -1,5 +1,5 @@
 import { Schema, model, Types, Document } from 'mongoose';
-import { SubscriptionTypes } from '../types/types';
+import { PaymentType, SubscriptionTypes } from '../types/types';
 
 const subscriptionTypes: SubscriptionTypes[] = [
     'single',
@@ -9,12 +9,14 @@ const subscriptionTypes: SubscriptionTypes[] = [
     '10entrance'
   ];
 
+const paymentTypes: PaymentType[] = ['banktransfer', 'cash', 'paypal', 'other'];
+
 export interface SubscriptionDocument extends Document {
   date: Date;
   type: SubscriptionTypes;
   amount: number;
   subscriptionExp: Date;
-  paymentType: 'banktransfer' | 'cash' | 'paypal' | 'other';
+  paymentType: PaymentType;
   athleteId: Types.ObjectId;
   hasAlreadyPaid: boolean;
   notes?: string;
@@ -41,7 +43,7 @@ const SubscriptionSchema = new Schema<SubscriptionDocument>(
     },
     paymentType: {
       type: String,
-      enum: ['banktransfer', 'cash', 'paypal', 'other'],
+      enum: paymentTypes,
       required: true
     },
     athleteId: {

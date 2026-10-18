@@ -1,10 +1,10 @@
-import { SubscriptionTypes } from '../types/types';
+import { PaymentType, SubscriptionTypes } from '../types/types';
 
 export interface CreateSubscriptionBody {
   date: Date;
   type: SubscriptionTypes;
   amount: number;
-  paymentType: 'banktransfer' | 'cash' | 'paypal' | 'other';
+  paymentType: PaymentType;
   notes?: string;
 }
 
@@ -12,6 +12,6 @@ export interface UpdateSubscriptionBody {
   date?: Date;
   type?: SubscriptionTypes;
   amount?: number;
-  paymentType?: 'banktransfer' | 'cash' | 'paypal' | 'other';
+  paymentType?: PaymentType;
   notes?: string;
 }
