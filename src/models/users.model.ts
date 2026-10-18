@@ -10,6 +10,14 @@ const UserSchema = new Schema<UserBody>({
         type: String,
         required: true
     }
-}, { timestamps: true })
+}, {
+    timestamps: true,
+    toJSON: {
+        transform: (_doc, ret) => {
+            const { password, ...user } = ret;
+            return user;
+        }
+    }
+})
 
 export const User = model<UserBody>('User', UserSchema)
