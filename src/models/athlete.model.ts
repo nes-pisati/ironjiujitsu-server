@@ -107,8 +107,12 @@ const AthleteSchema = new Schema<AthleteDocument>(
     },
     whatsappConsentDate: {
       type: Date
+    },
+    archived: {
+      type: Boolean,
+      default: false
     }
-    
+
   },
   { timestamps: true }
 );
