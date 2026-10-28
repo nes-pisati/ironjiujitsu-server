@@ -21,6 +21,8 @@ export type Belt = Exclude<KidsBelts, 'white'> | AdultsBelts;
 
 export type SubscriptionTypes = 'single' | 'month' | 'quarterly' | 'sixmonth' | '10entrance'
 
+export type PaymentType = 'banktransfer' | 'cash' | 'paypal' | 'other'
+
 export type GenderType = 'M' | 'F'
 
 export type EnsuranceType = 'A' | 'B'

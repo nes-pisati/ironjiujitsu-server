@@ -3,6 +3,7 @@ import cors from 'cors';
 import athleteRoutes from './routes/athlete_routes'
 import subscriptionRoutes from './routes/subscription_routes'
 import usersRoutes from './routes/users/users_routes'
+import authUser from './middlewares/users/user_auth'
 import { connectDB } from './db'
 import dotenv from 'dotenv'
 import './cron/subscriptionReminder.cron';
@@ -34,8 +35,8 @@ app.get('/health', (_, res) => {
     res.status(200).send('OK');
 });
 
-app.use('/athlete', athleteRoutes);
-app.use('/subscription', subscriptionRoutes);
+app.use('/athlete', authUser, athleteRoutes);
+app.use('/subscription', authUser, subscriptionRoutes);
 app.use('/user', usersRoutes);
 
 connectDB().then(() => {

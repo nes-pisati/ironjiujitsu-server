@@ -34,19 +34,15 @@ export const loginUser = async (
 ): Promise<any> => {
   try {
     const user = await User.findOne({ username: req.body.username });
-    if (!user) {
-      return res.status(404).json({ error: 'Utente non trovato' });
-    }
-
-    const isMatch = await bcrypt.compare(req.body.password, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ error: 'Password non valida' });
+    const isMatch = user ? await bcrypt.compare(req.body.password, user.password) : false;
+    if (!user || !isMatch) {
+      return res.status(401).json({ error: 'Credenziali non valide' });
     }
 
     const token = jwt.sign(
       { id: user._id, username: user.username, role: 'user' },
       jwtSecretKey,
-      { expiresIn: '1h' }
+      { expiresIn: '3h' }
     );
 
     res.status(200).json({ token, user });
