@@ -127,6 +127,7 @@ export const updateAthlete = async (
     }
 
     delete updateData.subscriptionId;
+    delete updateData.archived;
 
     const updatedAthlete = await Athlete.findByIdAndUpdate(
       id,
@@ -142,6 +143,37 @@ export const updateAthlete = async (
   } catch (error) {
     res.status(400).json({
       error: "Errore nell'aggiornamento dell'atleta",
+      details: error
+    });
+  }
+};
+
+export const setAthleteArchived = async (
+  req: Request<{ id: string }, {}, { archived: boolean }>,
+  res: Response
+): Promise<any> => {
+  const { id } = req.params;
+  const { archived } = req.body;
+
+  if (typeof archived !== 'boolean') {
+    return res.status(400).json({ error: 'Il campo archived deve essere di tipo booleano' });
+  }
+
+  try {
+    const updatedAthlete = await Athlete.findByIdAndUpdate(
+      id,
+      { archived },
+      { new: true }
+    ).populate('subscriptionId');
+
+    if (!updatedAthlete) {
+      return res.status(404).json({ error: 'Atleta non trovato' });
+    }
+
+    return res.status(200).json(updatedAthlete);
+  } catch (error) {
+    res.status(400).json({
+      error: "Errore nell'archiviazione dell'atleta",
       details: error
     });
   }

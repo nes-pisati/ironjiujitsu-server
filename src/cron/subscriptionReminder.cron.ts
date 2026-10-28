@@ -32,6 +32,7 @@ cron.schedule('0 9 * * *', async () => {
   for (const sub of subscriptions) {
 
     const athlete: any = sub.athleteId;
+    if (athlete?.archived) continue;
     if (!athlete?.whatsappConsent) continue;
     if (!athlete?.phoneNumber) continue;
     if (sub.amount === 0) continue;
