@@ -69,6 +69,16 @@ const AthleteSchema = new Schema<AthleteDocument>(
       enum: allBelts,
       required: true
     },
+    beltDate: {
+      type: Date
+    },
+    uijjAffiliated: {
+      type: Boolean,
+      default: false
+    },
+    uijjAffiliationDate: {
+      type: Date
+    },
     subscriptionId: {
       type: Schema.Types.ObjectId,
       ref: 'Subscription',

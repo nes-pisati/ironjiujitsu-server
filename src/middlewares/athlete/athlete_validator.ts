@@ -18,13 +18,18 @@ function isKidsBelt(belt: string): belt is KidsBelts {
     return (KidsBelts as readonly string[]).includes(belt)
 }
 
+function isPastDate(date: Date): boolean {
+    const parsedDate = new Date(date);
+    return !isNaN(parsedDate.getTime()) && parsedDate <= new Date();
+}
+
 const greyBelts = ['greywhite', 'grey', 'greyblack']
 const yellowBelts = ['yellowwhite', 'yellow', 'yellowblack']
 const orangeBelts = ['orangewhite', 'orange', 'orangeblack']
 const greenBelts = ['greenwhite', 'green', 'greenblack']
 
 export default function validateAthlete(req: Request, res: Response, next: NextFunction): any {
-    const { name, surname, birthDate, email, phoneNumber, type, belt } = req.body as AthleteBody;
+    const { name, surname, birthDate, email, phoneNumber, type, belt, beltDate, uijjAffiliated, uijjAffiliationDate } = req.body as AthleteBody;
 
     const actualYear = new Date().getFullYear()
 
@@ -98,6 +103,18 @@ export default function validateAthlete(req: Request, res: Response, next: NextF
     //Adulti sotto i 19 anni NON possono avere la cintura nera
     if (type === 'adult' && athleteAge < 19 && belt === 'black') {
         return res.status(400).json({ error: 'Cintura non valida per questa età' });
+    }
+
+    if (beltDate && !isPastDate(beltDate)) {
+        return res.status(400).json({ error: 'Data di conseguimento della cintura non valida' });
+    }
+
+    if (uijjAffiliated !== undefined && typeof uijjAffiliated !== 'boolean') {
+        return res.status(400).json({ error: 'Il campo tesseramento UIJJ deve essere di tipo booleano' });
+    }
+
+    if (uijjAffiliationDate && !isPastDate(uijjAffiliationDate)) {
+        return res.status(400).json({ error: 'Data di tesseramento UIJJ non valida' });
     }
 
     return next();

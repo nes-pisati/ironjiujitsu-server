@@ -37,6 +37,9 @@ export interface AthleteBody {
     phoneNumber: string;
     type: AthleteType;
     belt: Belt,
+    beltDate?: Date | null;
+    uijjAffiliated?: boolean;
+    uijjAffiliationDate?: Date | null;
     medicalCertificate: boolean;
     medicalCertificateReleaseDate: Date;
     medicalCertificateExp: Date;
