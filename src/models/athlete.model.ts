@@ -106,10 +106,6 @@ const AthleteSchema = new Schema<AthleteDocument>(
       type: Date,
       required: true
     },
-    ensuranceStartDate: {
-      type: Date,
-      required: true
-    },
     whatsappConsent: {
       type: Boolean,
       required: true,

@@ -45,7 +45,6 @@ export interface AthleteBody {
     medicalCertificateExp: Date;
     ensurance: boolean;
     ensuranceType: EnsuranceType;
-    ensuranceStartDate: Date;
     ensuranceExp: Date;
     whatsappConsent: Boolean;
     whatsappConsentDate: Date;
