@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { Athlete } from '../models/athlete.model';
-import { getExpirationDate } from '../utils/athleteUtils';
+import { getEnsuranceExpirationDate, getExpirationDate } from '../utils/athleteUtils';
 import { CreateAthleteBody, UpdateAthleteBody } from '../dto/athlete.dto';
 import { Subscription } from '../models/subscription.model';
 import { normalizeItalianPhone } from '../utils/phoneNumberUtils';
@@ -17,15 +17,11 @@ export const createAthlete = async (
       ? getExpirationDate(data.medicalCertificateReleaseDate)
       : undefined;
 
-    const ensuranceExp = data.ensuranceStartDate
-      ? getExpirationDate(data.ensuranceStartDate)
-      : undefined;
-
     const newAthlete = await Athlete.create({
       ...data,
       phoneNumber: normalizeItalianPhone(data.phoneNumber), // 👈 QUI
       ...(medicalCertificateExp && { medicalCertificateExp }),
-      ...(ensuranceExp && { ensuranceExp })
+      ensuranceExp: getEnsuranceExpirationDate()
     });
 
     res.status(201).json(newAthlete);
@@ -120,10 +116,18 @@ export const updateAthlete = async (
       );
     }
 
-    if (data.ensuranceStartDate) {
-      updateData.ensuranceExp = getExpirationDate(
-        data.ensuranceStartDate
-      );
+    delete updateData.renewEnsurance;
+    delete updateData.ensuranceExp;
+
+    let shouldUpdateEnsuranceExp = data.renewEnsurance === true;
+
+    if (!shouldUpdateEnsuranceExp && data.ensuranceType) {
+      const currentAthlete = await Athlete.findById(id).select('ensuranceType');
+      shouldUpdateEnsuranceExp = currentAthlete?.ensuranceType !== data.ensuranceType;
+    }
+
+    if (shouldUpdateEnsuranceExp) {
+      updateData.ensuranceExp = getEnsuranceExpirationDate();
     }
 
     delete updateData.subscriptionId;
